@@ -45,3 +45,14 @@ $RECYCLE.BIN/
 Network Trash Folder
 Temporary Items
 .apdisk
+
+# Jupyter files
+*_files
+*.aux
+*.log
+*.toc
+*.pdf
+*.out
+
+# VIM backups
+*~
