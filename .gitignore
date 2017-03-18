@@ -4,6 +4,8 @@ ehthumbs.db
 
 # Folder config file
 Desktop.ini
+NTUSER*
+ntuser*
 
 # Recycle Bin used on file shares
 $RECYCLE.BIN/
@@ -56,3 +58,6 @@ Temporary Items
 
 # VIM backups
 *~
+*.swp
+.viminfo
+_viminfo
