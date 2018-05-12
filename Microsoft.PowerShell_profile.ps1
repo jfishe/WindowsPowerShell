@@ -16,6 +16,18 @@ Function Edit-Vimrc
 # Set colorscheme
 Function Set-ColorScheme
 {
+<#
+.Synopsis
+Set the console color scheme to dark or light and save color scheme to defaults
+if desired.
+
+.Description
+The default is dark without updating the console color scheme defaults.
+
+If -d is selected, the color scheme is written to the console defaults. To
+save the defaults for future sessions, select Properties and OK and select
+Defaults and OK from the console menu.
+#>
     [cmdletbinding()]
     Param(
         [Parameter(Mandatory=$false)]
@@ -27,7 +39,7 @@ Function Set-ColorScheme
         [Parameter(Mandatory=$false)]
         [switch] $d
     )
-    
+
     Process
     {
         If ($Dark) {
@@ -40,10 +52,11 @@ Function Set-ColorScheme
             $ColorToolScheme = "$PSScriptRoot\Solarized Dark Higher Contrast.itermcolors"
         }
         Write-Host $ColorToolScheme
-        $ColorTool = "C:\Users\fishe\Documents\GitHub\console\tools\ColorTool"
+        # $ColorTool = "C:\Users\fishe\Documents\GitHub\console\tools\ColorTool"
+        $ColorTool = "$PSScriptRoot"
         # $ColorToolScheme = "$ColorTool\schemes\Solarized Dark Higher Contrast.itermcolors"
         # $ColorToolScheme = "C:\Users\fishe\Documents\GitHub\iTerm2-Color-Schemes\schemes\Solarized Dark Higher Contrast.itermcolors"
-        
+
         $ColorToolExe = "$ColorTool\ColorTool.exe"
         & $ColorToolExe  $ColorToolScheme
         If ($d) {
