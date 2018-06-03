@@ -78,8 +78,7 @@ if (Test-Path($ChocolateyProfile)) {
 
 # PSReadline Settings
 Set-PSReadlineOption -EditMode vi -BellStyle None `
-    -ViModeIndicator Prompt -ShowToolTips
-    -HistoryNoDuplicates
+    -ViModeIndicator Prompt -ShowToolTips -HistoryNoDuplicates
 
 # New-Alias -Name vim -Value '$HOME\vim80\vim.exe'
 
