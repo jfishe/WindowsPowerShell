@@ -83,5 +83,6 @@ Set-PSReadlineOption -EditMode vi -BellStyle None `
 # New-Alias -Name vim -Value '$HOME\vim80\vim.exe'
 
 
-Import-Module posh-git
+# Import-Module posh-git and configure prompt.
+. $PSScriptRoot\posh-gitrc.ps1
 
