@@ -78,7 +78,16 @@ if (Test-Path($ChocolateyProfile)) {
 
 # PSReadline Settings
 Set-PSReadlineOption -EditMode vi -BellStyle None `
-    -ViModeIndicator Prompt -ShowToolTips -HistoryNoDuplicates
+    -ViModeIndicator Cursor
+# History
+Set-PSReadLineOption -HistoryNoDuplicates
+Set-PSReadLineOption -HistorySearchCursorMovesToEnd
+Set-PSReadLineOption -HistorySaveStyle SaveIncrementally
+Set-PSReadLineOption -MaximumHistoryCount 4000
+# Tab completion
+Set-PSReadLineOption  -ShowToolTips
+Set-PSReadLineKeyHandler -Chord 'Shift+Tab' -Function Complete
+Set-PSReadLineKeyHandler -Key Tab -Function MenuComplete
 
 # New-Alias -Name vim -Value '$HOME\vim80\vim.exe'
 
