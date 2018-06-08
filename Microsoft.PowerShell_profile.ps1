@@ -89,9 +89,24 @@ Set-PSReadLineOption  -ShowToolTips
 Set-PSReadLineKeyHandler -Chord 'Shift+Tab' -Function Complete
 Set-PSReadLineKeyHandler -Key Tab -Function MenuComplete
 
-# New-Alias -Name vim -Value '$HOME\vim80\vim.exe'
-
-
 # Import-Module posh-git and configure prompt.
 . $PSScriptRoot\posh-gitrc.ps1
 
+# cddash
+# Enable cd -
+# http://goo.gl/xRbYbk
+function cddash {
+    if ($args[0] -eq '-') {
+        $pwd = $OLDPWD;
+    } else {
+        $pwd = $args[0];
+    }
+    $tmp = pwd;
+
+    if ($pwd) {
+        Set-Location $pwd;
+    }
+    Set-Variable -Name OLDPWD -Value $tmp -Scope global;
+}
+
+Set-Alias -Name cd -value cddash -Option AllScope
