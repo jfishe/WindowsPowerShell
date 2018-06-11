@@ -1,4 +1,4 @@
-# http://joonro.github.io/blog/posts/powershell-customizations.html#posh-git%20and%20prompt%20Customization
+# http://joonro.github.io/blog/posts/powershell-customizations.html#posh-git-and-prompt-Customization
 # http://serverfault.com/questions/95431
 function Test-Administrator {
     $user = [Security.Principal.WindowsIdentity]::GetCurrent();
