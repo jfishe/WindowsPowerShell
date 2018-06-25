@@ -1,16 +1,3 @@
-# To edit the Powershell Profile
-# (Not that I'll remember this)
-Function Edit-Profile
-{
-    vim $profile
-}
-
-# To edit Vim settings
-Function Edit-Vimrc
-{
-    vim $HOME\_vimrc
-}
-
 # Set colorscheme
 Function Set-ColorScheme
 {
