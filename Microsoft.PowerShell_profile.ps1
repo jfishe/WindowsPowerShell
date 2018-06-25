@@ -97,6 +97,24 @@ Set-PSReadLineKeyHandler -Key Tab -Function MenuComplete
 
 # Import-Module posh-git and configure prompt.
 . $PSScriptRoot\posh-gitrc.ps1
+if ($env:USERDOMAIN -eq 'DOMAIN1') {
+    # Set these in $PROFILE to overide ~/.gitconfig:
+    # GIT_AUTHOR_NAME is the human-readable name in the “author” field.
+    $env:GIT_AUTHOR_NAME='John D. Fisher'
+    # GIT_AUTHOR_EMAIL is the email for the “author” field.
+    $env:GIT_AUTHOR_EMAIL='jdfisher@energy-northwest.com'
+    # GIT_AUTHOR_DATE is the timestamp used for the “author” field.
+    # GIT_COMMITTER_NAME sets the human name for the “committer” field.
+    $env:GIT_COMMITTER_NAME=$env:GIT_AUTHOR_NAME
+    # GIT_COMMITTER_EMAIL is the email address for the “committer” field.
+    $env:GIT_COMMITTER_EMAIL=$env:GIT_AUTHOR_EMAIL
+    # GIT_COMMITTER_DATE is used for the timestamp in the “committer” field.
+    # EMAIL is the fallback email address in case the user.email configuration
+    # value isn’t set. If this isn’t set, Git falls back to the system user and
+    # host names.
+    $env:EMAIL=$env:GIT_AUTHOR_EMAIL
+}
+
 
 # cddash
 # Enable cd -
