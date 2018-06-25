@@ -149,11 +149,11 @@ Defender -Scan -ScanType 3 -File <filename>
     Begin
     {
         $Window_Defender = "$env:ProgramFiles\Windows Defender\MpCmdRun.exe"
-        $ArgumentList = "-Scan -ScanType 3 -File $File"
+        $ArgumentList = "-Scan -ScanType 3 -File ""$File"""
     }
 
     Process
     {
-        Start-Process -FilePath $Window_Defender -ArgumentList $ArgumentList
+        Start-Process -FilePath "$Window_Defender" -ArgumentList "$ArgumentList" -NoNewWindow -Verbose
     }
 }
