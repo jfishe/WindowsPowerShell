@@ -44,10 +44,10 @@ Defaults and OK from the console menu.
             $ColorToolScheme = "$PSScriptRoot\Solarized Dark Higher Contrast.itermcolors"
         }
         ElseIf ($Light) {
-            $ColorToolScheme = "$PSScriptRoot\Solarized Light.itermcolors"
+            $ColorToolScheme = "$PSScriptRoot\solarized_light.itermcolors"
         }
         Else {
-            $ColorToolScheme = "$PSScriptRoot\Solarized Dark Higher Contrast.itermcolors"
+            $ColorToolScheme = "$PSScriptRoot\solarized_dark.itermcolors"
         }
         Write-Verbose "You selected for the current session:`n         $ColorToolScheme"
         # $ColorTool = "C:\Users\fishe\Documents\GitHub\console\tools\ColorTool"
@@ -67,12 +67,18 @@ Defaults and OK from the console menu.
             }
         }
 
-        Set-PSReadlineOption -ResetTokenColors
+        # Set-PSReadlineOption -ResetTokenColors
         # Correct default tokens that don't change correctly for white background.
-        if ($Light) {
-            Set-PSReadlineOption -TokenKind Number -ForegroundColor Black
-            Set-PSReadlineOption -TokenKind Member -ForegroundColor Black
-        }
+        # if ($Light) {
+        #     $Colors = @{
+        #         ContinuationPrompt = 'Black'
+        #         Default = 'Black'
+        #         Type = 'DarkGray'
+        #         Member = 'Black'
+        #         Number = 'Black'
+        #     }
+        #     Set-PSReadlineOption -Colors $Colors
+        # }
     }
 }
 
@@ -91,9 +97,6 @@ Set-PSReadLineOption -HistoryNoDuplicates `
     -HistorySearchCursorMovesToEnd `
     -HistorySaveStyle SaveIncrementally `
     -MaximumHistoryCount 4000
-# Tab completion
-Set-PSReadLineKeyHandler -Chord 'Shift+Tab' -Function Complete `
-# Set-PSReadLineKeyHandler -Key Tab -Function MenuComplete
 
 # Import-Module posh-git and configure prompt.
 . $PSScriptRoot\posh-gitrc.ps1
