@@ -12,6 +12,12 @@ The default is dark without updating the console color scheme defaults.
 If -d is selected, the color scheme is written to the console defaults. To
 save the defaults for future sessions, select Properties and OK and select
 Defaults and OK from the console menu.
+
+.Notes
+Microsoft provides pre-built binaries or you can build from source. See RELATED LINKS.
+
+.Link
+https://github.com/Microsoft/console/tree/master/tools/ColorTool
 #>
     [cmdletbinding(SupportsShouldProcess, ConfirmImpact='Low')]
     Param(
