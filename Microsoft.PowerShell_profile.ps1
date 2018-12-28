@@ -234,3 +234,5 @@ Function Set-Dotfile {
         <# Post-impact code #>
     }
 }
+
+New-Alias which get-command
