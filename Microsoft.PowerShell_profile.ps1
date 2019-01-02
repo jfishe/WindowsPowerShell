@@ -145,7 +145,10 @@ Function Set-Dotfile {
     }
 }
 
-New-Alias which get-command
+Function whichall {
+    Get-Command -All $Args[0] | Format-List
+}
+Set-Alias -Name which -Value whichall
 
 # Powershell completion
 # Install-Module -Name "PSBashCompletions"
