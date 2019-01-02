@@ -38,7 +38,7 @@ if ($env:USERDOMAIN -eq 'DOMAIN1') {
 # cddash
 # Enable cd -
 # http://goo.gl/xRbYbk
-function cddash {
+Function cddash {
     if ($args[0] -eq '-') {
         $pwd = $OLDPWD;
     } else {
@@ -146,3 +146,14 @@ Function Set-Dotfile {
 }
 
 New-Alias which get-command
+
+# Powershell completion
+# Install-Module -Name "PSBashCompletions"
+# https://github.com/tillig/ps-bash-completions
+# ((pandoc --bash-completion) -join "`n") | Set-Content -Encoding Ascii -NoNewline -Path "$((Get-Item $PROFILE).Directory)\pandoc_bash_completion.sh"
+Register-BashArgumentCompleter -Command pandoc -BashCompletions "$PSScriptRoot\pandoc_bash_completion.sh"
+
+#region conda initialize
+# !! Contents within this block are managed by 'conda init' !!
+(& C:\Users\fishe\Anaconda3\Scripts\conda.exe shell.powershell hook) | Out-String | Invoke-Expression
+#endregion
