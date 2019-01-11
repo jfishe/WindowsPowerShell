@@ -157,7 +157,10 @@ Set-Alias -Name which -Value whichall
 Register-BashArgumentCompleter -Command pandoc -BashCompletions "$PSScriptRoot\pandoc_bash_completion.sh"
 Register-BashArgumentCompleter -Command npm -BashCompletions "$PSScriptRoot\npm_bash_completion.sh"
 
-#region conda initialize
-# !! Contents within this block are managed by 'conda init' !!
-(& C:\Users\fishe\Anaconda3\Scripts\conda.exe shell.powershell hook) | Out-String | Invoke-Expression
-#endregion
+# Initialze conda
+if ($condapath = Get-ChildItem -Path @(
+            "$env:LOCALAPPDATA\Continuum\anaconda3\Scripts",
+            "~\Anaconda3\Scripts") conda.exe -ErrorAction SilentlyContinue
+   ) {
+    (& $condapath.FullName shell.powershell hook) | Out-String | Invoke-Expression
+}
