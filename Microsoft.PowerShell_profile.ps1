@@ -155,6 +155,7 @@ Set-Alias -Name which -Value whichall
 # https://github.com/tillig/ps-bash-completions
 # ((pandoc --bash-completion) -join "`n") | Set-Content -Encoding Ascii -NoNewline -Path "$((Get-Item $PROFILE).Directory)\pandoc_bash_completion.sh"
 Register-BashArgumentCompleter -Command pandoc -BashCompletions "$PSScriptRoot\pandoc_bash_completion.sh"
+Register-BashArgumentCompleter -Command npm -BashCompletions "$PSScriptRoot\npm_bash_completion.sh"
 
 #region conda initialize
 # !! Contents within this block are managed by 'conda init' !!
