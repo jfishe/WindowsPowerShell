@@ -146,7 +146,7 @@ Function Set-Dotfile {
 }
 
 Function whichall {
-    Get-Command -All $Args[0] | Format-List
+    Get-Command -All $Args[0] -ErrorAction SilentlyContinue | Format-List
 }
 Set-Alias -Name which -Value whichall
 
