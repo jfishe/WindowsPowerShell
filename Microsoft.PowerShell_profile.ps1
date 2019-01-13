@@ -148,7 +148,7 @@ Function Set-Dotfile {
 Function _which {
     Get-Command -All $Args[0] -ErrorAction SilentlyContinue | Format-List
 }
-Set-Alias -Name which -Value whichall
+Set-Alias -Name which -Value _which
 
 # Powershell completion
 # Install-Module -Name "PSBashCompletions"
@@ -158,9 +158,12 @@ Register-BashArgumentCompleter -Command pandoc -BashCompletions "$PSScriptRoot\p
 Register-BashArgumentCompleter -Command npm -BashCompletions "$PSScriptRoot\npm_bash_completion.sh"
 
 # Initialze conda
-if ($condapath = Get-ChildItem -Path @(
-            "$env:LOCALAPPDATA\Continuum\anaconda3\Scripts",
-            "~\Anaconda3\Scripts") conda.exe -ErrorAction SilentlyContinue
-   ) {
+$condapath = @(
+        "$env:LOCALAPPDATA\Continuum\anaconda3\Scripts",
+        "~\Anaconda3\Scripts",
+        "~\Miniconda3\Scripts"
+        )
+if ($condapath = Get-ChildItem -Path $condapath conda.exe `
+        -ErrorAction SilentlyContinue) {
     (& $condapath.FullName shell.powershell hook) | Out-String | Invoke-Expression
 }
