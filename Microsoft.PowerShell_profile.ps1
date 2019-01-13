@@ -150,6 +150,60 @@ Function _which {
 }
 Set-Alias -Name which -Value _which
 
+Function Set-ColorScheme {
+
+<#
+.SYNOPSIS
+
+Toggle the console color scheme between solarized dark and light.
+
+.DESCRIPTION
+
+Windows Console ColorTool should be in $env:PATH.
+
+The schemes\ folder should be in the same directory as ColorTool.exe.
+
+The color schemes, based on vim-solarized8, were created using terminal.sexy.
+
+.OUTPUTS
+
+ColorTool.exe --quiet [[solarized.dark]|[solarized.light]]
+
+.LINK
+
+https://github.com/Microsoft/console/tree/master/tools/ColorTool
+
+.LINK
+
+https://terminal.sexy/
+
+.LINK
+
+https://github.com/lifepillar/vim-solarized8
+
+#>
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact='Low')]
+    param()
+    begin {
+        $colortool = Get-Command -Name "colortool"
+        $ColorSchemes = $colortool.Path |
+            ForEach-Object -Process {(Get-Item $_).Directory} |
+            ForEach-Object -Process {Get-ChildItem $_ -Name "schemes/solarized.*"} |
+            ForEach-Object -Process {(Get-Item $_.PSPath).BaseName}
+        $colorscheme = [int]$(($env:COLORSCHEME -eq 0))
+        $ConfirmMessage = @("Change console color scheme to",
+            $ColorSchemes[$colorscheme]
+            )
+    }
+    process {
+        if ($PSCmdlet.ShouldProcess($ConfirmMessage)) {
+            $env:COLORSCHEME = $colorscheme
+            & $colortool --quiet $ColorSchemes[$env:COLORSCHEME]
+        }
+    }
+}
+Set-Alias -Name yob -Value Set-ColorScheme
+
 # Powershell completion
 # Install-Module -Name "PSBashCompletions"
 # https://github.com/tillig/ps-bash-completions
