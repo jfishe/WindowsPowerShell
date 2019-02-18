@@ -15,7 +15,15 @@ Set-PSReadLineOption -HistoryNoDuplicates `
     -MaximumHistoryCount 4000
 
 # Import-Module posh-git and configure prompt.
+# 400 msec
 . $PSScriptRoot\posh-gitrc.ps1
+# Import-Module posh-git
+# $GitPromptSettings.DefaultPromptAbbreviateHomeDirectory = $true
+# # $GitPromptSettings.DefaultPromptBeforeSuffix.Text = '`n'
+# $GitPromptSettings.DefaultPromptSuffix = '`n$(''>'' * ($nestedPromptLevel + 1)) '
+# # $GitPromptSettings.AfterText += "`n"
+# $GitPromptSettings.DefaultPromptPrefix = "$env:USERNAME@$env:COMPUTERNAME : "
+
 if ($env:USERDOMAIN -eq 'DOMAIN1') {
     # Set these in $PROFILE to overide ~/.gitconfig:
     # GIT_AUTHOR_NAME is the human-readable name in the “author” field.
@@ -204,6 +212,7 @@ https://github.com/lifepillar/vim-solarized8
 }
 Set-Alias -Name yob -Value Set-ColorScheme
 
+$env:PROFILEDIR = (Get-Item $PROFILE).Directory
 # Powershell completion
 # Install-Module -Name "PSBashCompletions"
 # https://github.com/tillig/ps-bash-completions
@@ -213,9 +222,9 @@ Register-BashArgumentCompleter -Command npm -BashCompletions "$PSScriptRoot\npm_
 
 # Initialze conda
 $condapath = @(
-        "$env:LOCALAPPDATA\Continuum\anaconda3\Scripts",
+        "~\Miniconda3\Scripts",
         "~\Anaconda3\Scripts",
-        "~\Miniconda3\Scripts"
+        "$env:LOCALAPPDATA\Continuum\anaconda3\Scripts"
         )
 if ($condapath = Get-ChildItem -Path $condapath conda.exe `
         -ErrorAction SilentlyContinue) {
