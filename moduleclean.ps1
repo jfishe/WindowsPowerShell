@@ -38,34 +38,34 @@
  Remove all old versions of installed modules in $PROFILE's directory.
 
 #>
-Param()
+param()
 
-write-host "this will remove all old versions of installed modules"
+Write-Host "this will remove all old versions of installed modules"
 # write-host "be sure to run this as an admin" -foregroundcolor yellow
-write-host "(You can update all your Azure RM modules with update-module Azurerm -force)"
+Write-Host "(You can update all your Azure RM modules with update-module Azurerm -force)"
 
 $PROFILEDIR = (Get-Item $PROFILE).Directory
-$mods = Get-InstalledModule  |
-    Where-Object {$_.InstalledLocation -like "$PROFILEDIR*"}
+$mods = Get-InstalledModule |
+Where-Object { $_.InstalledLocation -like "$PROFILEDIR*" }
 
 foreach ($Mod in $mods)
 {
-  write-host "Checking $($mod.name)"
-  $latest = get-installedmodule $mod.name
-  $specificmods = get-installedmodule $mod.name -allversions
-  write-host "$($specificmods.count) versions of this module found [ $($mod.name) ]"
+  Write-Host "Checking $($mod.name)"
+  $latest = Get-InstalledModule $mod.Name
+  $specificmods = Get-InstalledModule $mod.Name -AllVersions
+  Write-Host "$($specificmods.count) versions of this module found [ $($mod.name) ]"
 
   foreach ($sm in $specificmods)
   {
     if ($sm.version -ne $latest.version)
-	{
-	  write-host "uninstalling $($sm.name) - $($sm.version) [latest is $($latest.version)]"
-	  $sm | uninstall-module -force
-	  write-host "done uninstalling $($sm.name) - $($sm.version)"
-          write-host "    --------"
-	}
+    {
+      Write-Host "uninstalling $($sm.name) - $($sm.version) [latest is $($latest.version)]"
+      $sm | Uninstall-Module -Force
+      Write-Host "done uninstalling $($sm.name) - $($sm.version)"
+      Write-Host "    --------"
+    }
 
   }
-  write-host "------------------------"
+  Write-Host "------------------------"
 }
-write-host "done"
+Write-Host "done"
