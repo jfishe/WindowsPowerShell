@@ -5,7 +5,7 @@ function Test-Administrator {
     (New-Object Security.Principal.WindowsPrincipal $user).IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)
 }
 
-function prompt {
+function global:prompt() {
     # https://github.com/dahlbyk/posh-git/wiki/Customizing-Your-PowerShell-Prompt
     $origLastExitCode = $LastExitCode
     Write-VcsStatus
@@ -14,6 +14,9 @@ function prompt {
         Write-Host "(Elevated) " -NoNewline -ForegroundColor White
     }
 
+    if ($Env:CONDA_PROMPT_MODIFIER) {
+        $Env:CONDA_PROMPT_MODIFIER | Write-Host -NoNewline
+    }
     Write-Host "$env:USERNAME@" -NoNewline -ForegroundColor DarkYellow
     Write-Host "$env:COMPUTERNAME" -NoNewline -ForegroundColor Magenta
     Write-Host " : " -NoNewline -ForegroundColor DarkGray
