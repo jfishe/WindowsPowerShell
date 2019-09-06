@@ -9,7 +9,9 @@ If ($host.Name -eq 'ConsoleHost') {
     Set-PSReadlineOption -EditMode vi -BellStyle None `
         -ViModeIndicator Cursor `
         -ShowToolTips
-# History
+    # Disabled by default in vi mode
+    Set-PSReadLineKeyHandler -Key 'Ctrl+w' -Function BackwardDeleteWord
+    # History
     Set-PSReadLineOption -HistoryNoDuplicates `
         -HistorySearchCursorMovesToEnd `
         -HistorySaveStyle SaveIncrementally `
