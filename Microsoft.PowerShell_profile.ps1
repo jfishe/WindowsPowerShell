@@ -10,16 +10,47 @@ if (Test-Path($ChocolateyProfile)) {
 
 # PSReadline Settings
 If ($host.Name -eq 'ConsoleHost') {
-    Set-PSReadlineOption -EditMode vi -BellStyle None `
-        -ViModeIndicator Cursor `
-        -ShowToolTips
+    $PSReadlineOptions = @{
+        EditMode = "vi"
+        BellStyle = "None"
+        ViModeIndicator = "Cursor"
+        ShowToolTips = $true
+
+        # History
+        HistoryNoDuplicates = $true
+        HistorySearchCursorMovesToEnd = $true
+        HistorySaveStyle = "SaveIncrementally"
+        MaximumHistoryCount = 4000
+
+        # Prediction
+        PredictionSource = "History"
+        PredictionViewStyle = "ListView"
+
+        # Oh-My-Posh prompt
+        ExtraPromptLineCount = 1
+        PromptText = "$([char]::ConvertFromUtf32(0x279C)) " # ➜
+
+        # Colors = @{
+        #     "InlinePredictionColor" = "`e[95m"
+        #     "ListPredictionColor" = "`e[95m"
+        #     "ListPredictionSelectedColor" = "`e[48;95m"
+        # }
+    }
+    Set-PSReadLineOption @PSReadlineOptions
     # Disabled by default in vi mode
     Set-PSReadLineKeyHandler -Key 'Ctrl+w' -Function BackwardDeleteWord
-    # History
-    Set-PSReadLineOption -HistoryNoDuplicates `
-        -HistorySearchCursorMovesToEnd `
-        -HistorySaveStyle SaveIncrementally `
-        -MaximumHistoryCount 4000
+    Set-PSReadLineKeyHandler -Key 'Ctrl+Spacebar' -Function MenuComplete
+
+
+    Function _history {
+        Get-Content (Get-PSReadLineOption).HistorySavePath | less -N
+    }
+    Remove-Item -Path Alias:\history -ErrorAction SilentlyContinue
+    Set-Alias -Name history -Value _history `
+        -Description "Show PSReadline command history file with pager by less"
+
+    # Default Yellow/Cyan is low contrast
+    $Host.PrivateData.ProgressForegroundColor = [ConsoleColor]::Red
 }
 
 if ($env:USERDOMAIN -eq 'DOMAIN1') {
@@ -58,34 +89,6 @@ Function cddash {
     Set-Variable -Name OLDPWD -Value $tmp -Scope global;
 }
 Set-Alias -Name cd -value cddash -Option AllScope
-
-Function Defender {
-<#
-.Synopsis
-Windows Defender Scan
-
-.Description
-Create a function to run MpCmdRun.exe with appropriate options to scan a file.
-
-Defender -Scan -ScanType 3 -File <filename>
-#>
-    [cmdletbinding()]
-    Param(
-        [Parameter(Mandatory=$true,Position=1)]
-        [string] $File
-    )
-
-    Begin
-    {
-        $Window_Defender = "$env:ProgramFiles\Windows Defender\MpCmdRun.exe"
-        $ArgumentList = "-Scan -ScanType 3 -File ""$File"""
-    }
-
-    Process
-    {
-        Start-Process -FilePath "$Window_Defender" -ArgumentList "$ArgumentList" -NoNewWindow -Verbose
-    }
-}
 
 Function Set-Dotfile {
     <#
@@ -219,24 +222,14 @@ If ($host.Name -eq 'ConsoleHost') {
     Register-BashArgumentCompleter -Command pandoc `
         -BashCompletions "$PSScriptRoot\pandoc_bash_completion.sh" `
         -ErrorAction SilentlyContinue
-    Register-BashArgumentCompleter -Command npm `
-        -BashCompletions "$PSScriptRoot\npm_bash_completion.sh" `
-        -ErrorAction SilentlyContinue
-}
-
-# Initialze conda
-$condapath = @(
-        "~\Miniconda3\Scripts",
-        "~\Anaconda3\Scripts",
-        "$env:LOCALAPPDATA\Continuum\anaconda3\Scripts"
-        )
-if ($condapath = Get-ChildItem -Path $condapath conda.exe `
-        -ErrorAction SilentlyContinue) {
-    (& $condapath.FullName "shell.powershell" "hook") | Out-String | Invoke-Expression
 }
 
 # Import-Module posh-git and configure prompt.
 # 400 msec
 If ($host.Name -eq 'ConsoleHost') {
-    . $PSScriptRoot\posh-gitrc.ps1
+    (@(&"C:/Users/jdfen/AppData/Local/Programs/oh-my-posh/bin/oh-my-posh.exe" --print-init --shell=pwsh --config="C:\Users\jdfen\iterm2.omp.json") -join "`n") | Invoke-Expression
+
+    Import-Module VimTabCompletion
+    Import-Module DirColors
+    Update-DirColors ~\.dircolors
 }
