@@ -1,34 +1,34 @@
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAvoidUsingInvokeExpression",
-"", Justification="Required by conda init")]
+    "", Justification = "Required by starship")]
 Param()
 
 # Chocolatey profile
 $ChocolateyProfile = "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
 if (Test-Path($ChocolateyProfile)) {
-  Import-Module "$ChocolateyProfile"
+    Import-Module "$ChocolateyProfile"
 }
 
 # PSReadline Settings
 If ($host.Name -eq 'ConsoleHost') {
     $PSReadlineOptions = @{
-        EditMode = "vi"
-        BellStyle = "None"
-        ViModeIndicator = "Cursor"
-        ShowToolTips = $true
+        EditMode                      = "vi"
+        BellStyle                     = "None"
+        ViModeIndicator               = "Cursor"
+        ShowToolTips                  = $true
 
         # History
-        HistoryNoDuplicates = $true
+        HistoryNoDuplicates           = $true
         HistorySearchCursorMovesToEnd = $true
-        HistorySaveStyle = "SaveIncrementally"
-        MaximumHistoryCount = 4000
+        HistorySaveStyle              = "SaveIncrementally"
+        MaximumHistoryCount           = 4000
 
         # Prediction
-        PredictionSource = "History"
-        PredictionViewStyle = "ListView"
+        PredictionSource              = "History"
+        PredictionViewStyle           = "ListView"
 
         # Oh-My-Posh prompt
-        ExtraPromptLineCount = 1
-        PromptText = "$([char]::ConvertFromUtf32(0x279C)) " # ➜
+        ExtraPromptLineCount          = 1
+        PromptText                    = "$([char]::ConvertFromUtf32(0x279C)) " # ➜
 
         # Colors = @{
         #     "InlinePredictionColor" = "`e[95m"
@@ -56,19 +56,19 @@ If ($host.Name -eq 'ConsoleHost') {
 if ($env:USERDOMAIN -eq 'DOMAIN1') {
     # Set these in $PROFILE to overide ~/.gitconfig:
     # GIT_AUTHOR_NAME is the human-readable name in the “author” field.
-    $env:GIT_AUTHOR_NAME='John D. Fisher'
+    $env:GIT_AUTHOR_NAME = 'John D. Fisher'
     # GIT_AUTHOR_EMAIL is the email for the “author” field.
-    $env:GIT_AUTHOR_EMAIL='jdfisher@energy-northwest.com'
+    $env:GIT_AUTHOR_EMAIL = 'jdfisher@energy-northwest.com'
     # GIT_AUTHOR_DATE is the timestamp used for the “author” field.
     # GIT_COMMITTER_NAME sets the human name for the “committer” field.
-    $env:GIT_COMMITTER_NAME=$env:GIT_AUTHOR_NAME
+    $env:GIT_COMMITTER_NAME = $env:GIT_AUTHOR_NAME
     # GIT_COMMITTER_EMAIL is the email address for the “committer” field.
-    $env:GIT_COMMITTER_EMAIL=$env:GIT_AUTHOR_EMAIL
+    $env:GIT_COMMITTER_EMAIL = $env:GIT_AUTHOR_EMAIL
     # GIT_COMMITTER_DATE is used for the timestamp in the “committer” field.
     # EMAIL is the fallback email address in case the user.email configuration
     # value isn’t set. If this isn’t set, Git falls back to the system user and
     # host names.
-    $env:EMAIL=$env:GIT_AUTHOR_EMAIL
+    $env:EMAIL = $env:GIT_AUTHOR_EMAIL
 }
 
 
@@ -108,7 +108,7 @@ Function Set-Dotfile {
     .PARAMETER Force
     The name of a file to write failed computer names to. Defaults to errors.txt.
       #>
-    [CmdletBinding(SupportsShouldProcess, ConfirmImpact='Medium')]
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
 
     Param(
         [Parameter()]
@@ -145,10 +145,10 @@ Function Set-Dotfile {
         }
 
         Get-ChildItem -Path $Path -Recurse:$Recurse -Force:$Force | `
-            Where-Object {$_.name -like ".*" -and $_.attributes -match 'Hidden' `
-                -eq $false} | `
+            Where-Object { $_.name -like ".*" -and $_.attributes -match 'Hidden' `
+                -eq $false } | `
             Set-ItemProperty -name Attributes `
-                -value ([System.IO.FileAttributes]::Hidden)
+            -value ([System.IO.FileAttributes]::Hidden)
 
         <# Post-impact code #>
     }
@@ -161,7 +161,7 @@ Set-Alias -Name which -Value _which
 
 Function Set-ColorScheme {
 
-<#
+    <#
 .SYNOPSIS
 
 Toggle the console color scheme between solarized dark and light.
@@ -191,17 +191,17 @@ https://terminal.sexy/
 https://github.com/lifepillar/vim-solarized8
 
 #>
-    [CmdletBinding(SupportsShouldProcess, ConfirmImpact='Low')]
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Low')]
     param()
     begin {
         $colortool = Get-Command -Name "colortool"
         $ColorSchemes = $colortool.Path |
-            ForEach-Object -Process {(Get-Item $_).Directory} |
-            ForEach-Object -Process {Get-ChildItem $_ -Name "schemes/solarized.*"}
+        ForEach-Object -Process { (Get-Item $_).Directory } |
+        ForEach-Object -Process { Get-ChildItem $_ -Name "schemes/solarized.*" }
         $colorscheme = [int]$(($env:COLORSCHEME -eq 0))
         $ConfirmMessage = @("Change console color scheme to",
             $ColorSchemes[$colorscheme]
-            )
+        )
     }
     process {
         if ($PSCmdlet.ShouldProcess($ConfirmMessage)) {
@@ -227,9 +227,9 @@ If ($host.Name -eq 'ConsoleHost') {
 # Import-Module posh-git and configure prompt.
 # 400 msec
 If ($host.Name -eq 'ConsoleHost') {
-    (@(&"C:/Users/jdfen/AppData/Local/Programs/oh-my-posh/bin/oh-my-posh.exe" --print-init --shell=pwsh --config="C:\Users\jdfen\iterm2.omp.json") -join "`n") | Invoke-Expression
-
     Import-Module VimTabCompletion
     Import-Module DirColors
     Update-DirColors ~\.dircolors
+    Import-Module posh-git
+    Invoke-Expression (&starship init powershell)
 }
