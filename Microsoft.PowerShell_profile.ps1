@@ -80,20 +80,6 @@ If ($host.Name -eq 'ConsoleHost') {
     Set-Alias -Name which -Value _which `
         -Description "Get-Command -All <command>"
 
-    Function _gitbash {
-        $Parameters = @{
-            # less = @('--RAW-CONTROL-CHARS', '--ignore-case')
-            # See $env:LESS
-            ls = @('-AFh', '--color=auto', '--group-directories-first')
-            grep = @('--color=auto')
-        }
-        $Name = $MyInvocation.InvocationName
-        $Options = $Parameters[$Name]
-        & $(Get-Command -Name $Name -CommandType Application) @Options @Args
-    }
-    Set-Alias -Name ls -Value _gitbash -Description "GNU ls"
-    Set-Alias -Name grep -Value _gitbash -Description "GNU grep"
-}
 
 If ($host.Name -eq 'ConsoleHost') {
     $env:PROFILEDIR = Split-Path $PROFILE
