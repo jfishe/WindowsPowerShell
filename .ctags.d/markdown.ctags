@@ -1,0 +1,39 @@
+# Include language for reference because Markdown and FrontMatter reuse LETTER "t".
+--fields=+{language}
+# Enable FrontMatter subparser, if available.
+--extras=+{guest}
+
+# Concatenate the line number and pattern with a semicolon in between.
+# Similar to Vimwiki Tags https://github.com/vimwiki/vimwiki
+--excmd=combine
+
+--input-encoding=UTF-8
+--output-encoding=UTF-8
+
+--langdef=notes{base=Markdown}
+--kinddef-notes=d,doctag,doctags
+--kinddef-notes=e,tag,tags
+
+--_tabledef-notes=main
+--_tabledef-notes=frontmatter
+--_tabledef-notes=fmtags
+
+--_mtable-regex-notes=main/---//{tenter=frontmatter}
+# Commas separate array elements. Do not include in tags.
+# Capture :vimwiki-syntax-tags:
+# with at least 2 characters to ignore SharePoint and Windows Drive letters.
+--_mtable-regex-notes=main/:([a-zA-Z][-._\/a-zA-Z0-9]{2,}):/\1/e/{mgroup=1}{_advanceTo=1end}
+# Capture #markdown-syntax-tags
+--_mtable-regex-notes=main/#([a-zA-Z0-9][-._\/a-zA-Z0-9]*)\s/\1/e/{mgroup=1}{_advanceTo=1end}
+--_mtable-regex-notes=main/.//
+
+# YAML metadata, tags:
+--_mtable-regex-notes=frontmatter/^tags: *//{tenter=fmtags}
+--_mtable-regex-notes=frontmatter/---//{tleave}
+--_mtable-regex-notes=frontmatter/.//
+
+--_mtable-regex-notes=fmtags/([a-zA-Z0-9][-._\/a-zA-Z0-9]*)/\1/d/
+--_mtable-regex-notes=fmtags/\]///{tleave}
+--_mtable-regex-notes=fmtags/:///{tleave}
+--_mtable-regex-notes=fmtags/---///{tleave}{_advanceTo=0start}
+--_mtable-regex-notes=fmtags/.///

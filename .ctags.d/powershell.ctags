@@ -1,0 +1,4 @@
+--exclude=Modules
+--exclude=Help
+--exclude=*.exe
+--exclude=*.dll

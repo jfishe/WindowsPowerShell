@@ -1,0 +1,9 @@
+--recurse=yes
+
+# Relative tags allow tests to be path insensitive.
+--tag-relative=always
+
+# Exclude
+--exclude=.ctags
+--exclude=.ctags.d
+--exclude=ctags.d
