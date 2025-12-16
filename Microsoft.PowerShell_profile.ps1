@@ -20,17 +20,10 @@ If ($host.Name -eq 'ConsoleHost') {
     # Disabled by default in vi mode
     Set-PSReadLineKeyHandler -Key 'Ctrl+w' -Function BackwardDeleteWord
     Set-PSReadLineKeyHandler -Key 'Ctrl+Spacebar' -Function MenuComplete
-
-
-    Function _history {
-        Get-Content (Get-PSReadLineOption).HistorySavePath | less -N
-    }
-    Remove-Item -Path Alias:\history -ErrorAction SilentlyContinue
-    Set-Alias -Name history -Value _history `
-        -Description "Show PSReadline command history file with pager by less"
-
     # Default Yellow/Cyan is low contrast
     $Host.PrivateData.ProgressForegroundColor = [ConsoleColor]::Red
+
+    Remove-Variable PSReadlineOptions
 }
 
 if ("$env:USERDOMAIN" -ne "$(hostname)") {
@@ -51,48 +44,81 @@ if ("$env:USERDOMAIN" -ne "$(hostname)") {
     $env:EMAIL = $env:GIT_AUTHOR_EMAIL
 }
 
-
-# cddash
-# Enable cd -
-# http://goo.gl/xRbYbk
-Function cddash {
-    if ($args[0] -eq '-') {
-        $pwd = $OLDPWD;
-    } else {
-        $pwd = $args[0];
-    }
-    $tmp = Get-Location;
-
-    if ($pwd) {
-        Set-Location $pwd;
-    }
-    Set-Variable -Name OLDPWD -Value $tmp -Scope global;
-}
-Set-Alias -Name cd -value cddash -Option AllScope
-
-Function _which {
-    Get-Command -All $Args[0] -ErrorAction SilentlyContinue | Format-List
-}
-Set-Alias -Name which -Value _which
-
-$env:PROFILEDIR = (Get-Item $PROFILE).Directory
-
-# Powershell completion
-# Install-Module -Name "PSBashCompletions"
-# https://github.com/tillig/ps-bash-completions
-# ((pandoc --bash-completion) -join "`n") | Set-Content -Encoding Ascii -NoNewline -Path "$((Get-Item $PROFILE).Directory)\pandoc_bash_completion.sh"
 If ($host.Name -eq 'ConsoleHost') {
-    Register-BashArgumentCompleter -Command pandoc `
-        -BashCompletions "$PSScriptRoot\pandoc_bash_completion.sh" `
-        -ErrorAction SilentlyContinue
+    # cddash
+    # Enable cd -
+    # http://goo.gl/xRbYbk
+    Function cddash {
+        if ($args[0] -eq '-') {
+            $pwd = $OLDPWD;
+        } else {
+            $pwd = $args[0];
+        }
+        $tmp = Get-Location;
+
+        if ($pwd) {
+            Set-Location $pwd;
+        }
+        Set-Variable -Name OLDPWD -Value $tmp -Scope global;
+    }
+    Set-Alias -Name cd -value cddash -Option AllScope
+
+    Function _history {
+        Get-Content (Get-PSReadLineOption).HistorySavePath | less -N
+    }
+
+    # Enable git-scm Linux ports
+    Remove-Item -Force  -ErrorAction SilentlyContinue -Path alias:\* `
+        -Include less, ls, grep, tree, diff, history
+
+    Set-Alias -Name history -Value _history `
+        -Description "Show PSReadline command history file with pager by less"
+
+    Function _which {
+        Get-Command -All $Args[0] -ErrorAction SilentlyContinue | Format-List
+    }
+    Set-Alias -Name which -Value _which `
+        -Description "Get-Command -All <command>"
+
+    Function _gitbash {
+        $Parameters = @{
+            # less = @('--RAW-CONTROL-CHARS', '--ignore-case')
+            # See $env:LESS
+            ls = @('-AFh', '--color=auto', '--group-directories-first')
+            grep = @('--color=auto')
+        }
+        $Name = $MyInvocation.InvocationName
+        $Options = $Parameters[$Name]
+        & $(Get-Command -Name $Name -CommandType Application) @Options @Args
+    }
+    Set-Alias -Name ls -Value _gitbash -Description "GNU ls"
+    Set-Alias -Name grep -Value _gitbash -Description "GNU grep"
 }
 
-# Import-Module posh-git and configure prompt.
-# 400 msec
 If ($host.Name -eq 'ConsoleHost') {
-    Import-Module VimTabCompletion
-    Import-Module DirColors
-    Update-DirColors ~\.dircolors
-    Import-Module posh-git
-    Invoke-Expression (&starship init powershell)
+    $env:PROFILEDIR = Split-Path $PROFILE
+    $completionPath = "$env:PROFILEDIR\Completions"
+    . "$completionPath/Profile.Completions"
+
+    # & starship init powershell --print-full-init |
+    #   Out-File -Encoding utf8 -Path $env:PROFILEDIR\completion\starship-profile.ps1
+    if (Get-Command 'starship' -ErrorAction SilentlyContinue) {
+        # Update-DirColors ~\.dircolors
+        # Copy $Env:LS_COLORS to User Environment.
+
+        Function Invoke-Starship-PreCommand {
+            if ($global:profile_initialized -ne $true) {
+                $global:profile_initialized = $true
+
+                Import-Module -Name DirColors -Global -DisableNameChecking
+                Import-Module -Global -DisableNameChecking -Name posh-git, git-aliases
+
+                Initialize-Profile
+            }
+        }
+        # Invoke-Expression (&starship init powershell)
+        . "$completionPath/starship-profile"
+    }
+
+    Remove-Variable completionPath
 }
