@@ -79,6 +79,7 @@ If ($host.Name -eq 'ConsoleHost') {
     }
     Set-Alias -Name which -Value _which `
         -Description "Get-Command -All <command>"
+}
 
 
 If ($host.Name -eq 'ConsoleHost') {
