@@ -1,6 +1,19 @@
-[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12
-# $OutputEncoding = [System.Text.UTF8Encoding]::new()
-# [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new()
-$Global:PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'
-$Global:PSDefaultParameterValues['Set-Content:Encoding'] = 'utf8'
-$Global:PSDefaultParameterValues['Export-Csv:Encoding'] = 'utf8'
+if (Test-Path Env:\PYTHONHOME) {
+    $pythonhome = $Env:PYTHONHOME
+    Remove-Item -Path Env:\PYTHONHOME
+}
+
+#region conda initialize
+# !! Contents within this block are managed by 'conda init' !!
+If (Test-Path "C:\Users\jdfen\miniforge3\Scripts\conda.exe") {
+    (& "C:\Users\jdfen\miniforge3\Scripts\conda.exe" "shell.powershell" "hook") | Out-String | ? { $_ } | Invoke-Expression
+}
+#endregion
+
+if (Test-Path Variable:pythonhome) {
+    $env:PYTHONHOME = "$pythonhome"
+    Remove-Variable -Name pythonhome
+} else {
+    $env:PYTHONHOME = "$env:APPDATA\uv\python\cpython-3.14.2-windows-x86_64-none"
+}
+

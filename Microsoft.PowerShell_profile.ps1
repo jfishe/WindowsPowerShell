@@ -26,86 +26,36 @@ If ($host.Name -eq 'ConsoleHost') {
     Remove-Variable PSReadlineOptions
 }
 
-if ("$env:USERDOMAIN" -ne "$(hostname)") {
-    # Set these in $PROFILE to overide ~/.gitconfig:
-    # GIT_AUTHOR_NAME is the human-readable name in the “author” field.
-    $env:GIT_AUTHOR_NAME = 'John D. Fisher'
-    # GIT_AUTHOR_EMAIL is the email for the “author” field.
-    $env:GIT_AUTHOR_EMAIL = 'jdfisher@energy-northwest.com'
-    # GIT_AUTHOR_DATE is the timestamp used for the “author” field.
-    # GIT_COMMITTER_NAME sets the human name for the “committer” field.
-    $env:GIT_COMMITTER_NAME = $env:GIT_AUTHOR_NAME
-    # GIT_COMMITTER_EMAIL is the email address for the “committer” field.
-    $env:GIT_COMMITTER_EMAIL = $env:GIT_AUTHOR_EMAIL
-    # GIT_COMMITTER_DATE is used for the timestamp in the “committer” field.
-    # EMAIL is the fallback email address in case the user.email configuration
-    # value isn’t set. If this isn’t set, Git falls back to the system user and
-    # host names.
-    $env:EMAIL = $env:GIT_AUTHOR_EMAIL
-}
-
-If ($host.Name -eq 'ConsoleHost') {
-    # cddash
-    # Enable cd -
-    # http://goo.gl/xRbYbk
-    Function cddash {
-        if ($args[0] -eq '-') {
-            $pwd = $OLDPWD;
-        } else {
-            $pwd = $args[0];
-        }
-        $tmp = Get-Location;
-
-        if ($pwd) {
-            Set-Location $pwd;
-        }
-        Set-Variable -Name OLDPWD -Value $tmp -Scope global;
-    }
-    Set-Alias -Name cd -value cddash -Option AllScope
-
-    Function _history {
-        Get-Content (Get-PSReadLineOption).HistorySavePath | less -N
-    }
-
-    # Enable git-scm Linux ports
-    Remove-Item -Force  -ErrorAction SilentlyContinue -Path alias:\* `
-        -Include less, ls, grep, tree, diff, history
-
-    Set-Alias -Name history -Value _history `
-        -Description "Show PSReadline command history file with pager by less"
-
-    Function _which {
-        Get-Command -All $Args[0] -ErrorAction SilentlyContinue | Format-List
-    }
-    Set-Alias -Name which -Value _which `
-        -Description "Get-Command -All <command>"
-}
-
+If ($host.Name -eq 'ConsoleHost') { . "$PSScriptRoot/Alias" }
 
 If ($host.Name -eq 'ConsoleHost') {
     $env:PROFILEDIR = Split-Path $PROFILE
-    $completionPath = "$env:PROFILEDIR\Completions"
-    . "$completionPath/Profile.Completions"
 
-    # & starship init powershell --print-full-init |
-    #   Out-File -Encoding utf8 -Path $env:PROFILEDIR\completion\starship-profile.ps1
+    . "$PSScriptRoot/Completions/Profile.Completions"
+
     if (Get-Command 'starship' -ErrorAction SilentlyContinue) {
-        # Update-DirColors ~\.dircolors
-        # Copy $Env:LS_COLORS to User Environment.
+        # & starship init powershell --print-full-init |
+        #   Out-File -Encoding utf8 -Path "Profile.Starship.ps1"
 
-        Function Invoke-Starship-PreCommand {
+        function Invoke-Starship-PreCommand {
             if ($global:profile_initialized -ne $true) {
                 $global:profile_initialized = $true
 
+                # Update-DirColors ~\.dircolors
+                # Copy $Env:LS_COLORS to User Environment.
                 Import-Module -Name DirColors -Global -DisableNameChecking
-                Import-Module -Global -DisableNameChecking -Name posh-git, git-aliases
 
-                Initialize-Profile
+                Import-Module -Global -DisableNameChecking -Name posh-git, git-aliases
             }
+            # # https://learn.microsoft.com/en-us/windows/terminal/tutorials/new-tab-same-directory#powershell-with-starship
+            $loc = $executionContext.SessionState.Path.CurrentLocation;
+            $prompt = "$([char]27)]9;12$([char]7)"
+            if ($loc.Provider.Name -eq "FileSystem") {
+                $prompt += "$([char]27)]9;9;`"$($loc.ProviderPath)`"$([char]27)\"
+            }
+            $host.ui.Write($prompt)
         }
         # Invoke-Expression (&starship init powershell)
-        . "$completionPath/starship-profile"
+        . "$PSScriptRoot/Profile.Starship.ps1"
     }
-
-    Remove-Variable completionPath
 }
