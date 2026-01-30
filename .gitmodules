@@ -1,3 +1,6 @@
 [submodule "dircolors-solarized"]
 	path = dircolors-solarized
 	url = https://github.com/seebi/dircolors-solarized.git
+[submodule "Completions"]
+	path = Completions
+	url = https://github.com/jfishe/powershell-completions.git
