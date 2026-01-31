@@ -29,6 +29,13 @@
 
 #>
 
+
+if ($PSVersionTable.PSVersion.Major -lt 6) {
+    # Enable git-scm Linux ports
+    Remove-Item -Force  -ErrorAction SilentlyContinue -Path alias:\* `
+        -Include less, ls, grep, tree, diff, history
+}
+
 Set-Alias -Name:"history" -Value:"_history" -Description:"Show PSReadline command history file with pager by less"
 Set-Alias -Name:"lD" -Value:"Invoke-Eza" -Description:"List only directories (excluding dotdirs) as a long list"
 Set-Alias -Name:"la" -Value:"Invoke-Eza" -Description:"List all files (except . and ..) as a long list"

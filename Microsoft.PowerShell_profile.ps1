@@ -34,8 +34,6 @@ If ($host.Name -eq 'ConsoleHost') {
     . "$PSScriptRoot/Completions/Profile.Completions"
 
     if (Get-Command 'starship' -ErrorAction SilentlyContinue) {
-        # & starship init powershell --print-full-init |
-        #   Out-File -Encoding utf8 -Path "Profile.Starship.ps1"
 
         function Invoke-Starship-PreCommand {
             if ($global:profile_initialized -ne $true) {
@@ -56,6 +54,17 @@ If ($host.Name -eq 'ConsoleHost') {
             $host.ui.Write($prompt)
         }
         # Invoke-Expression (&starship init powershell)
-        . "$PSScriptRoot/Profile.Starship.ps1"
+        try {
+            . "$PSScriptRoot/Profile.Starship.ps1"
+        } catch [System.Management.Automation.CommandNotFoundException] {
+            if ($PSVersionTable.PSVersion.Major -lt 6) {
+                & starship init powershell --print-full-init |
+                Out-File -Encoding utf8 -FilePath "$PSScriptRoot/Profile.Starship.ps1"
+            } else {
+                & starship init powershell --print-full-init |
+                Out-File -Encoding utf8 -Path "$PSScriptRoot/Profile.Starship.ps1"
+            }
+            . "$PSScriptRoot/Profile.Starship.ps1"
+        }
     }
 }
