@@ -1,7 +1,7 @@
 
 <#PSScriptInfo
 
-.VERSION 2.1
+.VERSION 2.2
 
 .GUID b998381b-af98-49e9-ac84-098576bb90a4
 
@@ -38,6 +38,7 @@ if ($PSVersionTable.PSVersion.Major -lt 6) {
     Remove-Item -Force  -ErrorAction SilentlyContinue -Path alias:\* `
         -Include less, ls, grep, tree, diff, history
 } else {
+    Remove-Alias -Name history
     $null = Register-EngineEvent -SourceIdentifier 'PowerShell.OnIdle' `
         -MaxTriggerCount 1 -Action {
         # Update-FormatData -PrependPath "$env:OneDrive\ScriptData\Powershell\Formats\MergedFormats\formats.ps1xml"
@@ -45,20 +46,30 @@ if ($PSVersionTable.PSVersion.Major -lt 6) {
     }
 
 }
-
-Set-Alias -Name:"history" -Value:"_history" -Description:"Show PSReadline command history file with pager by less"
 Set-Alias -Name:"lD" -Value:"Invoke-Eza" -Description:"List only directories (excluding dotdirs) as a long list"
 Set-Alias -Name:"la" -Value:"Invoke-Eza" -Description:"List all files (except . and ..) as a long list"
 Set-Alias -Name:"ll" -Value:"Invoke-Eza" -Description:"List files as a long list"
 Set-Alias -Name:"ls" -Value:"Invoke-Eza" -Description:"Plain eza call"
-Set-Alias -Name:"which" -Value:"_which" -Description:"Get-Command -All <command>"
 
-Function _history {
+Function history {
+    <#
+    .SYNOPSIS
+        Show PSReadline command history file
+    .NOTES
+        Depends on `bat`.
+    .LINK
+        https://github.com/sharkdp/bat
+    #>
     bat --language powershell (Get-PSReadLineOption).HistorySavePath
 }
 
-Function _which {
-    Get-Command -All $Args[0] -ErrorAction SilentlyContinue | Format-List
+Function which {
+    <#
+    .SYNOPSIS
+        Get-Command -All <command>
+    #>
+    Get-Command -All $Args[0] -ErrorAction SilentlyContinue |
+    Format-List -Property Name, Path, CommandType
 }
 
 Function Invoke-Eza {
