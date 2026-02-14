@@ -1,5 +1,7 @@
-# PSReadline Settings
-If ($host.Name -eq 'ConsoleHost') {
+$UserInteractive = -not ([Environment]::GetCommandLineArgs() -Contains '-NonInteractive') -and ($host.Name -eq 'ConsoleHost')
+
+If ($UserInteractive) {
+    # PSReadline Settings
     $PSReadlineOptions = @{
         EditMode                      = "vi"
         BellStyle                     = "None"
@@ -26,9 +28,9 @@ If ($host.Name -eq 'ConsoleHost') {
     Remove-Variable PSReadlineOptions
 }
 
-If ($host.Name -eq 'ConsoleHost') { . "$PSScriptRoot/Alias" }
+If ($UserInteractive) { . "$PSScriptRoot/Alias" }
 
-If ($host.Name -eq 'ConsoleHost') {
+If ($UserInteractive) {
     $env:PROFILEDIR = Split-Path $PROFILE
 
     . "$PSScriptRoot/Completions/Profile.Completions"
@@ -68,3 +70,5 @@ If ($host.Name -eq 'ConsoleHost') {
         }
     }
 }
+
+Remove-Variable UserInteractive
