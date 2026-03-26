@@ -36,7 +36,7 @@
 if ($PSVersionTable.PSVersion.Major -lt 6) {
     # Enable git-scm Linux ports
     Remove-Item -Force  -ErrorAction SilentlyContinue -Path alias:\* `
-        -Include less, ls, grep, tree, diff, history
+        -Include cat, less, ls, grep, tree, diff, history
 } else {
     Remove-Alias -Name history
     $null = Register-EngineEvent -SourceIdentifier 'PowerShell.OnIdle' `
@@ -46,6 +46,7 @@ if ($PSVersionTable.PSVersion.Major -lt 6) {
     }
 
 }
+Set-Alias -Name:"cat" -Value:"bat" -Description:"batcat - a cat(1) clone with syntax highlighting and Git integration."
 Set-Alias -Name:"lD" -Value:"Invoke-Eza" -Description:"List only directories (excluding dotdirs) as a long list"
 Set-Alias -Name:"la" -Value:"Invoke-Eza" -Description:"List all files (except . and ..) as a long list"
 Set-Alias -Name:"ll" -Value:"Invoke-Eza" -Description:"List files as a long list"
