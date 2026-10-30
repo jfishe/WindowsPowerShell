@@ -105,6 +105,50 @@ If ($UserInteractive) {
             }
             . "$PSScriptRoot/Profile.Starship.ps1"
         }
+
+        # Shell integration: OSC 133 semantic prompt marks for Windows Terminal
+        # https://learn.microsoft.com/en-us/windows/terminal/tutorials/shell-integration
+        #   A = prompt start, B = command start, C = output start, D;<code> = command done
+        # The prompt is also redrawn on vi mode changes (InvokePrompt), so A/D are only
+        # emitted once per new prompt; PSConsoleHostReadLine flags when a line was read.
+        $global:__Osc133StarshipPrompt = ${function:global:prompt}
+        $global:__Osc133NewPrompt = $true
+        $global:__Osc133CommandRan = $false
+
+        function global:prompt {
+            $origDollarQuestion = $global:?
+            $origLastExitCode = $global:LASTEXITCODE
+            $esc = [char]27; $bel = [char]7
+
+            if ($global:__Osc133NewPrompt) {
+                $marks = ''
+                if ($global:__Osc133CommandRan) {
+                    $code = if ($origDollarQuestion) { 0 } elseif ($origLastExitCode) { $origLastExitCode } else { 1 }
+                    $marks += "$esc]133;D;$code$bel"
+                }
+                $marks += "$esc]133;A$bel"
+                $host.ui.Write($marks)
+                $global:__Osc133NewPrompt = $false
+                $global:__Osc133CommandRan = $false
+            }
+
+            # Restore $? so starship computes the correct status
+            if (-not $origDollarQuestion) { Write-Error '' -ErrorAction Ignore }
+            $promptText = & $global:__Osc133StarshipPrompt
+            "$promptText$esc]133;B$bel"
+            if (-not $origDollarQuestion) { Write-Error '' -ErrorAction Ignore }
+        }
+
+        if (Test-Path function:PSConsoleHostReadLine) {
+            $global:__Osc133ReadLine = ${function:PSConsoleHostReadLine}
+            function global:PSConsoleHostReadLine {
+                $line = & $global:__Osc133ReadLine
+                $global:__Osc133NewPrompt = $true
+                $global:__Osc133CommandRan = -not [string]::IsNullOrWhiteSpace($line)
+                [Console]::Write("$([char]27)]133;C$([char]7)")
+                $line
+            }
+        }
     }
 }
 
