@@ -48,7 +48,7 @@ The prompt setup is skipped when `starship` is not on `PATH`.
 delete the cache to regenerate it:
 
 ```powershell
-Remove-Item "$env:PROFILEDIR\Profile.Starship.ps1"
+Remove-Item "$PROFILEDIR\Profile.Starship.ps1"
 ```
 
 ## Colors (tinty)

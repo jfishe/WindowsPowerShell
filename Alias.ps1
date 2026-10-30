@@ -42,7 +42,7 @@ if ($PSVersionTable.PSVersion.Major -lt 6) {
     $null = Register-EngineEvent -SourceIdentifier 'PowerShell.OnIdle' `
         -MaxTriggerCount 1 -Action {
         # Update-FormatData -PrependPath "$env:OneDrive\ScriptData\Powershell\Formats\MergedFormats\formats.ps1xml"
-        Update-FormatData -PrependPath "$env:PROFILEDIR\Formats\AliasInfo.ps1xml"
+        Update-FormatData -PrependPath "$global:PROFILEDIR\Formats\AliasInfo.ps1xml"
     }
 
 }

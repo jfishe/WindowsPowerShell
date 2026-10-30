@@ -1,3 +1,7 @@
+# Session-scoped, not $env:, so pwsh and powershell child processes don't
+# inherit each other's profile directory.
+$global:PROFILEDIR = $PSScriptRoot
+
 $UserInteractive = -not ([Environment]::GetCommandLineArgs() -Contains '-NonInteractive') -and ($host.Name -eq 'ConsoleHost')
 
 If ($UserInteractive) {
@@ -55,8 +59,6 @@ If ($UserInteractive) {
 If ($UserInteractive) { . "$PSScriptRoot/Alias" }
 
 If ($UserInteractive) {
-    $env:PROFILEDIR = Split-Path $PROFILE
-
     . "$PSScriptRoot/Completions/Profile.Completions"
 
     if (Get-Command 'starship' -ErrorAction SilentlyContinue) {
