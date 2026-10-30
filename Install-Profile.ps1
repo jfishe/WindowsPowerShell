@@ -1,6 +1,6 @@
 <#PSScriptInfo
 
-.VERSION 1.1
+.VERSION 1.3
 
 .GUID 88708b51-21f2-4ff8-8b9c-9df11578d0a9
 
@@ -12,7 +12,7 @@
 
 .TAGS
 
-.LICENSEURI https://github.com/jfishe/PowerShell/blob/master/LICENSE
+.LICENSEURI https://github.com/jfishe/PowerShell/blob/main/LICENSE
 
 .PROJECTURI
 
@@ -52,7 +52,6 @@
          AddToPath = $false
      }
      'posh-git'       = 'latest'
-     'oh-my-posh'     = 'latest'
      Plaster          = 'latest'
      PSScriptAnalyzer = 'latest'
      WslInterop       = 'latest'
@@ -87,7 +86,7 @@ if (!(Get-PackageProvider -Name 'NuGet')) {
 }
 
 Write-Output "Install/Import Profile-Dependent Modules"
-$PSDependVersion = '0.3.2'
+$PSDependVersion = '0.6.0'
 if (!(Get-InstalledModule -Name 'PSDepend' -RequiredVersion $PSDependVersion `
             -ErrorAction 'SilentlyContinue')) {
     Install-Module -Name 'PSDepend' -RequiredVersion $PSDependVersion -Force `

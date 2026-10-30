@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Derived from the built-in System.Management.Automation.AliasInfo view
+     (Get-FormatData | Export-FormatData), PowerShell, MIT License,
+     Copyright (c) Microsoft Corporation. Adds the Description field. -->
+<Configuration>
+  <ViewDefinitions>
+    <View>
+      <Name>System.Management.Automation.AliasInfo</Name>
+      <ViewSelectedBy>
+        <TypeName>System.Management.Automation.AliasInfo</TypeName>
+      </ViewSelectedBy>
+      <ListControl>
+        <ListEntries>
+          <ListEntry>
+            <ListItems>
+              <ListItem>
+                <PropertyName>DisplayName</PropertyName>
+              </ListItem>
+              <ListItem>
+                <PropertyName>Description</PropertyName>
+              </ListItem>
+              <ListItem>
+                <PropertyName>CommandType</PropertyName>
+              </ListItem>
+              <ListItem>
+                <PropertyName>Definition</PropertyName>
+              </ListItem>
+              <ListItem>
+                <PropertyName>ReferencedCommand</PropertyName>
+              </ListItem>
+              <ListItem>
+                <PropertyName>ResolvedCommand</PropertyName>
+              </ListItem>
+            </ListItems>
+          </ListEntry>
+        </ListEntries>
+      </ListControl>
+    </View>
+  </ViewDefinitions>
+</Configuration>

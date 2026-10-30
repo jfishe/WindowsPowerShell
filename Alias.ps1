@@ -1,7 +1,7 @@
 
 <#PSScriptInfo
 
-.VERSION 2.2
+.VERSION 2.3
 
 .GUID b998381b-af98-49e9-ac84-098576bb90a4
 
@@ -9,7 +9,7 @@
 
 .COMPANYNAME John D. Fisher
 
-.COPYRIGHT 2025 John D. Fisher
+.COPYRIGHT 2025-2026 John D. Fisher
 
 .TAGS
     alias
@@ -36,9 +36,9 @@
 if ($PSVersionTable.PSVersion.Major -lt 6) {
     # Enable git-scm Linux ports
     Remove-Item -Force  -ErrorAction SilentlyContinue -Path alias:\* `
-        -Include cat, less, ls, grep, tree, diff, history
+        -Include less, ls, grep, tree, diff, history
 } else {
-    Remove-Alias -Name history
+    Remove-Alias -Force -Name history, diff
     $null = Register-EngineEvent -SourceIdentifier 'PowerShell.OnIdle' `
         -MaxTriggerCount 1 -Action {
         # Update-FormatData -PrependPath "$env:OneDrive\ScriptData\Powershell\Formats\MergedFormats\formats.ps1xml"
@@ -46,7 +46,6 @@ if ($PSVersionTable.PSVersion.Major -lt 6) {
     }
 
 }
-Set-Alias -Name:"cat" -Value:"bat" -Description:"batcat - a cat(1) clone with syntax highlighting and Git integration."
 Set-Alias -Name:"lD" -Value:"Invoke-Eza" -Description:"List only directories (excluding dotdirs) as a long list"
 Set-Alias -Name:"la" -Value:"Invoke-Eza" -Description:"List all files (except . and ..) as a long list"
 Set-Alias -Name:"ll" -Value:"Invoke-Eza" -Description:"List files as a long list"
@@ -78,12 +77,10 @@ Function Invoke-Eza {
         .SYNOPSIS
             eza a modern alternative to ls with selected configuration and aliases.
         .DESCRIPTION
-            eza is a modern alternative for the venerable file-listing
-            command-line program ls that ships with Unix and Linux operating
-            systems, giving it more features and better defaults. It uses
-            colours to distinguish file types and metadata. It knows about
-            symlinks, extended attributes, and Git. And it’s small, fast, and
-            just one single binary.
+            Wrap eza, an ls replacement, with a shared configuration:
+            directories first, Git status, a header row, icons, hyperlinks
+            and ISO timestamps. The alias used to invoke it (lD, la, ll, ls)
+            selects the listing options.
         .LINK
             https://eza.rocks/
         .LINK

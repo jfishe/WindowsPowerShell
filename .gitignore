@@ -1,5 +1,7 @@
-# Powershell modules & scripts
 Profile.Starship.ps1
+Help/
 Modules/
 Scripts/
 tags*
+Profile.Tinty.ps1
+Profiler/

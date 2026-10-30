@@ -1,19 +1,45 @@
 @{
-    PSDependOptions  = @{
+    PSDependOptions   = @{
         AddToPath = $false
-	Target = 'CurrentUser'
+        Target    = 'CurrentUser'
     }
-    'posh-git'       = 'latest'
-    'oh-my-posh'     = 'latest'
-    Plaster          = 'latest'
-    PSScriptAnalyzer = 'latest'
+    'git-aliases'     = 'latest'
+    'posh-git'        = 'latest'
+    DirColors         = 'latest'
+    Plaster           = 'latest'
     PSBashCompletions = 'latest'
-    PSReadLine       = 'latest'
-    DirColors        = 'latest'
-    VimTabCompletion = @{
-	Parameters = @{
-		AllowClobber = $true
-	}
-	VimTabCompletion = 'latest'
+    PSScriptAnalyzer  = 'latest'
+    PSReadLine        = 'latest'
+    VimTabCompletion  = @{
+        Parameters       = @{
+            AllowClobber = $true
+        }
+        VimTabCompletion = 'latest'
     }
+    # WslInterop        = 'latest'
+    WSLTabCompletion  = 'latest'
 }
+||||||| empty tree
+=======
+@{
+    PSDependOptions   = @{
+        AddToPath = $false
+        Target    = 'CurrentUser'
+    }
+    'git-aliases'     = 'latest'
+    'posh-git'        = 'latest'
+    DirColors         = 'latest'
+    Plaster           = 'latest'
+    PSBashCompletions = 'latest'
+    PSScriptAnalyzer  = 'latest'
+    PSReadLine        = 'latest'
+    VimTabCompletion  = @{
+        Parameters       = @{
+            AllowClobber = $true
+        }
+        VimTabCompletion = 'latest'
+    }
+    # WslInterop        = 'latest'
+    WSLTabCompletion  = 'latest'
+}
+>>>>>>> powershell/main
